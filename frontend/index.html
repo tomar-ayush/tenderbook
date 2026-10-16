@@ -1,0 +1,806 @@
+<meta charset="utf-8">
+<title>Tenderbook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bid history, authorities and competitors of GeM sellers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Tenderbook app shell scoped to one seller: sidebar sections, sticky app bar, asymmetric panels; tokens from the design */
+:root{
+  --bg:#ecedef;--surface:#fcfcfd;--surface-2:#f3f4f7;--surface-3:#e8eaef;--border:#d3d6de;--border-strong:#abb1be;
+  --text:#0c1420;--text-2:#333e4f;--muted:#5d6979;--faint:#828d9e;
+  --accent:#2a4eb8;--accent-hover:#20409c;--accent-soft:#e7eaf5;--accent-line:#c0c9e4;--on-accent:#fff;
+  --good:#0f7a56;--good-soft:#e2efe9;--warn:#9c6108;--warn-soft:#f5ebda;--crit:#b33333;--crit-soft:#f6e4e4;--neutral-soft:#e7e9ef;
+  --c1:#2a4eb8;--c2:#0f8a64;--c3:#c7841a;--c4:#c24646;--c5:#1f8a8a;--c6:#9aa3b2;
+  --map-land:#dde0e7;--map-line:#b4bac7;
+  --shadow-sm:0 1px 2px #1018260f,0 1px 1px #1018260d;--shadow-md:0 4px 16px #10182617,0 1px 3px #1018260f;--shadow-lg:0 20px 50px #0d152226,0 2px 8px #0d152212;
+  --r-sm:7px;--r:11px;--r-lg:20px;--sidebar-w:264px;
+  --font-display:Archivo,"IBM Plex Sans",Helvetica,Arial,sans-serif;
+  --font-body:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  --font-mono:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#070e1d;--surface:#0f1b33;--surface-2:#14213c;--surface-3:#1a2947;--border:#22314f;--border-strong:#2e4066;
+  --text:#e9effa;--text-2:#bccbe3;--muted:#8fa1be;--faint:#6b7e9e;
+  --accent:#4c87ff;--accent-hover:#6c9cff;--accent-soft:#16264a;--accent-line:#2b4787;--on-accent:#06122b;
+  --good:#3dd39b;--good-soft:#0f2c25;--warn:#e5a445;--warn-soft:#2e2416;--crit:#f2777a;--crit-soft:#2e1a1d;--neutral-soft:#182642;
+  --c1:#5b8fff;--c2:#3dc996;--c3:#e5a445;--c4:#f07a7c;--c5:#46c4c4;--c6:#5d6f8f;
+  --map-land:#16284a;--map-line:#2b4272;
+  --shadow-sm:0 1px 2px #0006;--shadow-md:0 6px 22px #00000073;--shadow-lg:0 22px 56px #0009;color-scheme:dark}}
+:root[data-theme=dark]{
+  --bg:#070e1d;--surface:#0f1b33;--surface-2:#14213c;--surface-3:#1a2947;--border:#22314f;--border-strong:#2e4066;
+  --text:#e9effa;--text-2:#bccbe3;--muted:#8fa1be;--faint:#6b7e9e;
+  --accent:#4c87ff;--accent-hover:#6c9cff;--accent-soft:#16264a;--accent-line:#2b4787;--on-accent:#06122b;
+  --good:#3dd39b;--good-soft:#0f2c25;--warn:#e5a445;--warn-soft:#2e2416;--crit:#f2777a;--crit-soft:#2e1a1d;--neutral-soft:#182642;
+  --c1:#5b8fff;--c2:#3dc996;--c3:#e5a445;--c4:#f07a7c;--c5:#46c4c4;--c6:#5d6f8f;
+  --map-land:#16284a;--map-line:#2b4272;
+  --shadow-sm:0 1px 2px #0006;--shadow-md:0 6px 22px #00000073;--shadow-lg:0 22px 56px #0009;color-scheme:dark}
+
+*,:before,:after{box-sizing:border-box}
+.skip{position:absolute;left:16px;top:-60px;z-index:100;padding:8px 12px;border-radius:var(--r-sm);background:var(--accent);color:var(--on-accent);font-weight:600;text-decoration:none}.skip:focus{top:12px}
+html,body{min-height:100%}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{margin:0;font-family:var(--font-display);letter-spacing:-.015em;line-height:1.2;text-wrap:balance}
+h1{font-size:clamp(20px,2.4vw,26px);font-weight:700}h2{font-size:17px;font-weight:600}h3{font-size:14.5px;font-weight:600}
+p{margin:0}button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--font-body);font-variant-numeric:tabular-nums;letter-spacing:.01em}.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}.faint{color:var(--faint)}.small{font-size:12.5px}.tiny{font-size:11.5px}
+.eyebrow{font-size:12.5px;font-weight:500;color:var(--muted)}
+.row{display:flex;align-items:center}.gap6{gap:6px}.gap8{gap:8px}.gap10{gap:10px}.gap12{gap:12px}.gap16{gap:16px}.wrapf{flex-wrap:wrap}
+.trunc{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
+.page.anim .rise{animation:rise .55s var(--ease) both;animation-delay:calc(var(--i,0) * 55ms)}
+@keyframes rise{from{transform:translateY(8px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.page.anim .rise{animation:none}*{transition-duration:.001ms!important}}
+
+/* shell */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);flex:none;background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:16px 16px 14px}
+.brand .mark{width:30px;height:30px;border-radius:8px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px}
+.brand .name{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.02em;display:block}
+.brand .sub{font-size:12px;color:var(--muted);display:block;margin-top:-2px}
+.av{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.02em;background:var(--accent);color:var(--on-accent)}
+.av.them{background:var(--warn-soft);color:var(--warn)}.av.sm{width:28px;height:28px;border-radius:8px;font-size:10.5px}
+.av.ghost{background:var(--surface-3);color:var(--text-2)}
+.sidenav{flex:1;overflow-y:auto;padding:6px 10px 20px;display:flex;flex-direction:column;gap:2px}
+.sidegrp{font-size:12px;font-weight:500;color:var(--faint);padding:14px 10px 6px}
+.sideitem{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:var(--r-sm);color:var(--text-2);font-size:13px;font-weight:500;text-align:left;transition:background .15s,color .15s,transform .15s var(--ease)}
+.sideitem svg{flex:none;color:var(--faint)}
+.sideitem:hover{background:var(--surface-3);color:var(--text)}
+.sideitem:active{transform:scale(.98)}
+.sideitem.on{background:var(--accent-soft);color:var(--accent);font-weight:600}.sideitem.on svg{color:var(--accent)}
+.sideitem .ct{margin-left:auto;font-size:11px;color:var(--faint);font-family:var(--font-mono)}.sideitem.on .ct{color:var(--accent)}
+.sidefoot{margin:0 12px 12px;border-radius:var(--r);background:var(--surface-2);padding:12px 14px;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:4px;line-height:1.45}
+.sidefoot b{color:var(--text-2);font-weight:600}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;min-height:60px;padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bg)}
+.crumbs{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);min-width:0;flex:1}
+.crumbs .sepc{color:var(--faint)}.crumbs>:last-child{color:var(--text-2);font-weight:500}
+.page{width:100%;max-width:1440px;padding:24px 24px 72px;display:flex;flex-direction:column;gap:18px}
+.mtabs{display:none}
+
+/* parts */
+.card{background:var(--surface);border-radius:var(--r-lg);min-width:0}
+.pad{padding:22px 24px 24px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:600;letter-spacing:.02em;white-space:nowrap;background:var(--neutral-soft);color:var(--text-2)}
+.badge-good{background:var(--good-soft);color:var(--good)}.badge-warn{background:var(--warn-soft);color:var(--warn)}
+.badge-crit{background:var(--crit-soft);color:var(--crit)}.badge-accent{background:var(--accent-soft);color:var(--accent)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.evi{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:500;color:var(--faint);white-space:nowrap}
+.evi:before{content:"";width:5px;height:5px;background:currentColor;border-radius:1px;transform:rotate(45deg)}
+.evi.ver{color:var(--good)}
+.seg{display:inline-flex;gap:2px;padding:3px;background:var(--surface-3);border:1px solid var(--border);border-radius:999px;flex-wrap:wrap}
+.seg button{padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:500;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+.seg button:hover{color:var(--text)}
+.seg button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.seg.acc button.on{background:var(--accent-soft);color:var(--accent)}
+.link{color:var(--accent);font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.link:hover{color:var(--accent-hover)}
+.input{width:100%;height:36px;padding:0 11px 0 32px;border:1px solid var(--border-strong);border-radius:var(--r);background:var(--surface);font-size:13px;transition:border-color .15s,box-shadow .15s}
+.input::placeholder{color:var(--faint)}.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search{position:relative}.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--faint);pointer-events:none}
+.chip{height:28px;padding:0 11px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);font-size:12px;font-weight:500;color:var(--text-2);display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.chip:hover{border-color:var(--faint);color:var(--text)}.chip.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.chip .n{font-family:var(--font-mono);font-size:10.5px;opacity:.75}
+.btn{height:30px;padding:0 11px;border-radius:var(--r-sm);border:1px solid var(--border-strong);background:var(--surface);font-size:12.5px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:background .15s,transform .15s var(--ease)}
+.btn:hover{background:var(--surface-3)}.btn:active{transform:scale(.98)}.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* company head */
+.hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr);gap:6px;padding:6px}
+.hero .id{padding:18px 18px 20px}
+.who{display:flex;gap:14px;align-items:center}
+.av.lg{width:48px;height:48px;border-radius:14px;font-size:16px}
+.hero h1{font-size:clamp(22px,2.5vw,30px);letter-spacing:-.025em;line-height:1.12}
+dl.ids{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px 22px;margin:22px 0 0}
+dl.ids dd{overflow-wrap:anywhere}
+dl.ids dt{font-size:12px;color:var(--muted)}
+dl.ids dd{margin:2px 0 0;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.fig{background:var(--surface-2);border-radius:calc(var(--r-lg) - 6px);padding:20px 22px 0;display:flex;flex-direction:column;overflow:hidden;min-height:220px}
+.fig .big{font-family:var(--font-display);font-size:clamp(32px,3.4vw,46px);font-weight:700;letter-spacing:-.035em;line-height:1.02;margin-top:6px;font-variant-numeric:tabular-nums}
+.fig .sub{font-size:12.5px;color:var(--text-2);margin-top:8px}
+.fig .area{display:block;width:calc(100% + 44px);height:92px;margin:auto -22px 0}
+.fig .area path.a{fill:var(--accent-soft)}.fig .area path.l{fill:none;stroke:var(--accent);stroke-width:2;vector-effect:non-scaling-stroke}
+.minibar{height:6px;border-radius:999px;background:var(--surface-3);overflow:hidden;margin-top:8px}
+.minibar i{display:block;height:100%;border-radius:999px;background:var(--good);transform-origin:left;transform:scaleX(var(--w))}
+.awstrip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:var(--surface);border-radius:var(--r-lg);padding:6px}
+.aw{padding:14px 16px;display:flex;flex-direction:column;gap:3px;min-width:0;border-radius:calc(var(--r-lg) - 6px);transition:background .2s}
+.aw:hover{background:var(--surface-2)}
+.aw .k{font-size:12.5px;font-weight:500;color:var(--muted)}
+.aw .v{font-family:var(--font-display);font-size:24px;letter-spacing:-.02em;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aw .s{font-size:10.5px;color:var(--muted);line-height:1.4}
+.spark{height:24px;margin-top:4px}.spark path.l{fill:none;stroke:var(--accent);stroke-width:1.5}.spark path.a{fill:var(--accent-soft)}
+
+/* layout grids */
+.g-21{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px}
+.g-12{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px}
+.phead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.phead .sub{font-size:12.5px;color:var(--muted);font-family:var(--font-mono)}
+
+/* charts */
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.chart .grid{stroke:var(--surface-3);stroke-width:1}
+.chart .lbl{fill:var(--faint);font-family:var(--font-body);font-size:10px}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+.sw{width:10px;height:10px;border-radius:3px;display:block;flex:none}
+.brow{display:grid;grid-template-columns:118px minmax(0,1fr) 56px;gap:12px;align-items:center;padding:6px 0}
+.brow .bn{font-size:12.5px;color:var(--text-2)}
+.track{height:8px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+.track i{display:block;height:100%;border-radius:999px;transform-origin:left;transform:scaleX(var(--w,0));background:var(--c,var(--accent))}
+.brow .bv{text-align:right;font-family:var(--font-mono);font-size:12.5px;font-weight:600}
+.split{display:flex;height:10px;border-radius:999px;overflow:hidden;gap:2px;background:var(--surface-3)}
+.split i{display:block;height:100%}
+
+/* organisations panel */
+.orgpanel{overflow:hidden}
+.orghead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px 6px}
+.orghead .t{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.orgbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
+.orgbody{gap:6px;padding:6px}
+.orgbody>section{padding:18px 18px 20px;min-width:0;border-radius:calc(var(--r-lg) - 6px)}
+.orgbody>section+section{background:var(--surface-2)}
+.orow{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:11px 0}
+.orow:last-child{border-bottom:0}
+.orow .od{width:10px;height:10px;border-radius:50%;margin-top:5px;background:var(--c)}
+.orow .on{font-weight:600;font-size:13.5px;color:var(--text);line-height:1.35}
+.orow .os{font-size:11.5px;color:var(--muted)}
+.orow .ov{text-align:right;font-family:var(--font-mono);font-weight:600;font-size:13.5px;white-space:nowrap}
+.orow .op{display:block;font-size:11.5px;color:var(--muted);font-weight:500}
+.orow .track{grid-column:2/3;margin-top:4px}
+.maparea{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.mapbox{position:relative;background:var(--surface);border-radius:var(--r);padding:10px}
+.mapbox svg{width:100%;height:auto;display:block}
+.mapbox path{stroke:var(--map-line);stroke-width:.6;transition:opacity .15s,stroke .15s;cursor:pointer}
+.mapbox path:hover{stroke:var(--text);stroke-width:1.2}
+.mapbox path.sel{stroke:var(--accent);stroke-width:1.8}
+.mapbox path.dim{opacity:.35}
+.maplg{position:absolute;top:12px;right:12px;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;box-shadow:var(--shadow-sm);font-size:10.5px;color:var(--muted);font-family:var(--font-mono)}
+.maplg .grad{width:130px;height:7px;border-radius:999px;margin-bottom:5px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 12%,var(--map-land)),var(--accent))}
+.maptip{position:absolute;pointer-events:none;z-index:5;min-width:160px;padding:9px 11px;border-radius:var(--r);background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow-lg);font-size:11.5px}
+.maptip b{font-family:var(--font-display);font-size:13px;display:block;margin-bottom:3px}
+.maptip .r{display:flex;justify-content:space-between;gap:12px;color:var(--muted)}.maptip .r span:last-child{color:var(--text);font-family:var(--font-mono);font-weight:600}
+.statelist{max-height:430px;overflow-y:auto;padding-right:6px}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:9px 10px;border-radius:var(--r-sm);width:100%;text-align:left;transition:background .13s}
+.srow:hover{background:var(--surface)}.srow.sel{background:var(--accent-soft)}
+.srow .sn{font-weight:600;font-size:13px}.srow .sv{font-family:var(--font-mono);font-size:12.5px;font-weight:600;text-align:right}
+.srow .track{height:5px}.srow .sp{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:right}
+
+/* tables */
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:10px 12px;font-size:12px;font-weight:600;color:var(--muted);background:var(--surface-2);white-space:nowrap}
+.tbl th:first-child{border-radius:var(--r-sm) 0 0 var(--r-sm)}.tbl th:last-child{border-radius:0 var(--r-sm) var(--r-sm) 0}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl tbody tr{transition:background .13s}.tbl tbody tr:hover{background:var(--surface-2)}
+.tbl .r{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.tbl .sub{display:block;font-size:11.5px;color:var(--muted)}
+.tbl .name{font-weight:600}
+.rank{min-width:26px;height:22px;padding:0 5px;border-radius:6px;display:inline-grid;place-items:center;font-size:11px;font-weight:700;font-family:var(--font-mono);background:var(--surface-3);color:var(--text-2)}
+.rank.l1{background:var(--good-soft);color:var(--good)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:18px 20px 12px}
+.scroll-x{padding:0 12px 6px}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px 16px;font-size:12.5px;color:var(--muted)}
+.empty{padding:36px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px}
+.empty strong{color:var(--text);font-size:14.5px}
+
+/* categories, rivals preview */
+.catrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:10px 0}
+.catrow:last-child{border-bottom:0}
+.catrow .cn{font-size:12.5px;color:var(--text-2)}.catrow .cv{font-family:var(--font-mono);font-size:12px;color:var(--muted);text-align:right}
+.catrow .split{grid-column:1/-1;height:6px}
+.rival{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 6px;border-radius:8px;width:100%;text-align:left;transition:background .13s}
+.rival:hover{background:var(--surface-2);transform:translateX(2px)}
+.rival{transition:background .15s,transform .2s var(--ease)}
+.rival .rn{font-size:12.5px;font-weight:600}.rival .rs{font-size:11px;color:var(--muted)}
+.score{font-family:var(--font-mono);font-size:12.5px;font-weight:600;white-space:nowrap}
+.score .us{color:var(--accent)}.score .th{color:var(--warn)}
+
+/* competitors */
+.tbl tr.clickable{cursor:pointer}
+.tbl tr.clickable:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tbl td.go{width:32px;color:var(--faint);transition:transform .2s var(--ease),color .2s}
+.tbl tr.clickable:hover td.go{color:var(--accent);transform:translateX(3px)}
+.us-n{color:var(--accent);font-weight:600}.th-n{color:var(--warn);font-weight:600}
+.mtug{display:flex;gap:2px;width:140px;height:8px;border-radius:999px;overflow:hidden;background:var(--surface-3)}
+.mtug i{display:block;height:100%}
+.backrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.h2h-head{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:16px;align-items:center;padding:20px 22px}
+.side{display:flex;align-items:center;gap:12px;min-width:0}.side.r{flex-direction:row-reverse;text-align:right}
+.side .sn{font-family:var(--font-display);font-weight:600;font-size:14.5px;line-height:1.3}
+.vs{font-size:12px;font-weight:600;color:var(--muted);padding:6px 10px;background:var(--surface-2);border-radius:999px}
+.tug{padding:0 22px 20px}
+.tug .bar{display:flex;height:14px;border-radius:999px;overflow:hidden;gap:3px}
+.tug .bar i{display:block;height:100%}
+.tug .lbls{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--muted)}
+.tug .lbls b{font-family:var(--font-mono);font-size:15px;color:var(--text)}
+.cmp{display:grid;grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr);gap:0 14px;align-items:center;padding:11px 0}
+.cmp:last-child{border-bottom:0}
+.cmp .ml{font-size:11.5px;color:var(--muted);text-align:center;line-height:1.35}
+.cmp .cv{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:14px;font-weight:600}
+.cmp .cv.l{flex-direction:row-reverse}
+.cmp .cv .track{flex:1;height:6px}
+.cmp .cv.l .track i{transform-origin:right}
+.cmp .cv.better{color:var(--text)}.cmp .cv.worse{color:var(--muted)}
+.wbadge{font-size:11px;font-weight:600}
+
+@media (max-width:1240px){.awstrip{grid-template-columns:repeat(3,minmax(0,1fr))}.orgbody{grid-template-columns:1fr}.orgbody>section+section{border-left:0;border-top:1px solid var(--border)}}
+@media (max-width:1100px){.g-21,.g-12{grid-template-columns:1fr}}
+@media (max-width:900px){
+  .sidebar{display:none}.page{padding:16px 16px 48px}.appbar{padding:8px 16px}
+  .mtabs{display:flex;gap:4px;overflow-x:auto;padding:0 16px 10px;background:color-mix(in srgb,var(--surface) 88%,transparent);border-bottom:1px solid var(--border)}
+  .hero{grid-template-columns:1fr}
+}
+@media (max-width:760px){.maparea{grid-template-columns:1fr}.h2h-head{grid-template-columns:1fr;text-align:left}.side.r{flex-direction:row;text-align:left}.vs{justify-self:start}
+  .cmp{grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr)}}
+@media (max-width:560px){.awstrip{grid-template-columns:repeat(2,minmax(0,1fr))}.aw .v{font-size:17px}.brow{grid-template-columns:84px minmax(0,1fr) 44px}.hide-sm{display:none}}
+[hidden]{display:none!important}
+.crumblink{color:inherit;text-decoration:none}.crumblink:hover{color:var(--text);text-decoration:underline}
+.tbl a.name{color:inherit;text-decoration:none}.tbl a.name:hover{text-decoration:underline}
+</style>
+
+<a class="skip" href="#view">Skip to the profile</a>
+<div class="shell">
+  <aside class="sidebar" aria-label="Sections">
+    <div class="brand"><div class="mark">T</div><div><span class="name">Tenderbook</span><span class="sub">GeM bid history</span></div></div>
+    <nav class="sidenav" id="sidenav"></nav>
+    <div class="sidefoot"><b>Live data</b><span>Awarded GeM bids, contracts and bid documents. The company figures are rebuilt every night.</span><span class="faint">Map: @svg-maps/india, CC BY 4.0</span></div>
+  </aside>
+  <div class="main">
+    <header class="appbar">
+      <div class="crumbs" id="crumbs"></div>
+      <span class="badge" id="note" hidden></span>
+      <div class="seg acc" role="group" aria-label="Period" id="period"></div>
+    </header>
+    <nav class="mtabs" id="mtabs" aria-label="Sections"></nav>
+    <main class="page" id="view" tabindex="-1"></main>
+  </div>
+</div>
+
+<script>
+/* ---------- data from the API: company, buyer_org, tender, participation and contract totals ---------- */
+const API = (window.API_BASE || '').replace(/\/$/, ''), NAME = 'Tenderbook';
+let COMPANY = null, PART = [], T = {}, A = {}, C = {}, CT = {}, BY_TENDER = {}, INDIA = [], LIMITED = false, RIVALS = {};
+const LOADED = new Set();
+const END = new Date();
+const NO_AUTH = { organisation: 'Unknown authority', ministry: '', department: '', office: '', state: null };
+async function getJSON(path) {
+  const r = await fetch(API + path, { headers: { Accept: 'application/json' } });
+  if (!r.ok) throw new Error(r.status === 429 ? 'Too many requests. Wait a minute and try again.'
+    : r.status === 404 ? 'This company was not found.' : 'The server could not answer (' + r.status + '). Try again in a moment.');
+  return r.json();
+}
+async function loadCompany(id) {
+  const d = await getJSON('/api/company?id=' + encodeURIComponent(id));
+  COMPANY = d.company; PART = d.part; LIMITED = d.limited; RIVALS = d.rivals;
+  T = Object.fromEntries(d.tenders.map(t => [t.tender_id, t]));
+  A = Object.fromEntries(d.authorities.map(a => [a.buyer_org_id, a]));
+  C = Object.fromEntries([COMPANY, ...d.companies].map(c => [c.company_id, c]));
+  CT = Object.fromEntries(d.contracts.map(c => [c.tender_id + ':' + c.company_id, c.total]));
+  BY_TENDER = {};
+  for (const p of PART) if (T[p.tender_id]) (BY_TENDER[p.tender_id] ||= []).push(p);
+}
+async function loadRival(id) {
+  if (LOADED.has(id)) return;
+  const d = await getJSON('/api/rival?id=' + COMPANY.company_id + '&rival=' + id);
+  for (const p of d.part) if (T[p.tender_id]) { PART.push(p); (BY_TENDER[p.tender_id] ||= []).push(p); }
+  LOADED.add(id);
+}
+
+/* ---------- views over the data (what company_history, company_summary, company_org and company_competitor hold) ---------- */
+const state = { section: 'overview', period: 'all', org: { filter: 'awarded', metric: 'amount', state: null }, bids: { q: '', f: 'all', page: 0 },
+  auth: { q: '' }, comp: { q: '', sort: 'met', id: null } };
+const PERIODS = [['12m', '12 months', 365], ['24m', '24 months', 730], ['all', 'All time', 99999]];
+function inPeriod(t) { const days = PERIODS.find(p => p[0] === state.period)[2]; return (END - new Date(t.bid_end_at)) / 864e5 <= days; }
+function bidRows() {
+  return PART.filter(p => p.company_id === COMPANY.company_id && T[p.tender_id] && inPeriod(T[p.tender_id]))
+    .map(p => { const t = T[p.tender_id], a = A[t.buyer_org_id] || NO_AUTH; return { ...p, ...t, ...{ organisation: a.organisation, ministry: a.ministry, department: a.department, office: /^\*+$/.test(a.office || '') ? '' : a.office, state: t.state || a.state }, contract_total: CT[p.tender_id + ':' + p.company_id] ?? null }; })
+    .sort((a, b) => b.bid_end_at.localeCompare(a.bid_end_at));
+}
+const won = h => h.outcome === 1;
+const value = h => h.contract_total ?? h.offered_price ?? 0;
+function summary(H) {
+  const q = H.filter(h => h.tech_status === 1), w = H.filter(won), decided = H.filter(h => h.outcome !== 0);
+  const dates = H.map(h => h.bid_end_at).sort();
+  return { bids: H.length, qualified: q.length, won: w.length, value: w.reduce((s, h) => s + value(h), 0),
+    rate: decided.length ? w.length / decided.length : null, rate_q: q.length ? w.length / q.length : null,
+    buyers: new Set(H.map(h => h.buyer_org_id)).size, states: new Set(H.map(h => h.state).filter(Boolean)).size,
+    by_contract: w.filter(h => h.outcome_source === 1).length, pending: H.filter(h => h.outcome === 0).length,
+    rejected: H.filter(h => h.tech_status === 2).length, first: dates[0], last: dates[dates.length - 1] };
+}
+function months(H, split) {
+  const out = {}, end = new Date(END);
+  const span = state.period === '12m' ? 12 : state.period === '24m' ? 24 : 30;
+  for (let i = span - 1; i >= 0; i--) { const d = new Date(end.getFullYear(), end.getMonth() - i, 1); out[d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0')] = split(null); }
+  for (const h of H) { const k = h.bid_end_at.slice(0, 7); if (out[k]) split(out[k], h); }
+  return Object.entries(out);
+}
+function rivals(H) {
+  return (RIVALS[state.period] || []).map(r => ({ ...r, c: C[r.id] })).filter(r => r.c);
+}
+
+/* ---------- formatting ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
+const pct = (r, d = 1) => r == null ? '—' : (r * 100).toFixed(d) + '%';
+function inr(v) {
+  if (v == null) return '—'; v = Number(v);
+  if (v >= 1e7) return '₹' + (v / 1e7).toLocaleString('en-IN', { maximumFractionDigits: v >= 1e9 ? 0 : 2 }) + ' Cr';
+  if (v >= 1e5) return '₹' + (v / 1e5).toFixed(1) + ' L';
+  return '₹' + Math.round(v).toLocaleString('en-IN');
+}
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const day = s => { if (!s) return '—'; const d = new Date(s); return d.getDate() + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear(); };
+const initials = n => esc(n.replace(/^M\/S\.?\s*/i, '').split(/\s+/).filter(w => !/^(AND|OF|THE|&)$/i.test(w)).slice(0, 2).map(w => w[0]).join('').toUpperCase());
+const SMALLW = new Set(['and', 'of', 'the', 'for']), UPW = new Set(['llp', 'pvt', 'ltd', 'ntpc']);
+const title = n => n.toLowerCase().split(' ').map((w, i) => UPW.has(w) ? w.toUpperCase() : i && SMALLW.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+const short = n => title(n).replace(/\s+(Private Limited|Limited|LLP|PVT\.? LTD\.?)$/i, '');
+const ICON = {
+  overview: '<path d="M3 13h8V3H3zM13 21h8V11h-8zM3 21h8v-6H3zM13 3v6h8V3z"/>',
+  bids: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
+  authorities: '<path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/>',
+  competitors: '<circle cx="8" cy="9" r="3.2"/><circle cx="16.5" cy="9" r="3.2"/><path d="M2.5 20c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M12 16.2c1.1-.8 2.6-1.2 4.5-1.2 2.7 0 4.9 1.8 5.5 5"/>',
+  back: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+};
+const icon = (k, s = 16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+const niceStep = (max, lines = 6) => { const raw = Math.max(1, max / lines), p = 10 ** Math.floor(Math.log10(raw)), f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
+const bar = (w, c) => `<span class="track"><i style="--w:${Math.max(0, Math.min(1, w)).toFixed(4)};${c ? `--c:${c}` : ''}"></i></span>`;
+
+/* ---------- shell ---------- */
+const SECTIONS = [['overview', 'Overview'], ['bids', 'Bids'], ['authorities', 'Authorities'], ['competitors', 'Competitors']];
+function renderShell(H) {
+  const s = summary(H), rv = rivals(H);
+  const counts = { bids: s.bids, authorities: s.buyers, competitors: rv.length };
+  const items = SECTIONS.map(([k, l]) => `<button class="sideitem${state.section === k ? ' on' : ''}" data-go="${k}">${icon(k)}<span>${l}</span>${counts[k] != null ? `<span class="ct">${num(counts[k])}</span>` : ''}</button>`).join('');
+  document.getElementById('sidenav').innerHTML = `<div class="sidegrp">Company</div>${items}`;
+  document.getElementById('mtabs').innerHTML = SECTIONS.map(([k, l]) => `<button class="chip${state.section === k ? ' on' : ''}" data-go="${k}">${l}</button>`).join('');
+  document.getElementById('crumbs').innerHTML = `<a class="crumblink" href="./">Companies</a><span class="sepc">/</span><span class="trunc">${esc(short(COMPANY.display_name))}</span><span class="sepc">/</span><span>${SECTIONS.find(x => x[0] === state.section)[1]}</span>`;
+  document.getElementById('period').innerHTML = PERIODS.map(([k, l]) => `<button class="${state.period === k ? 'on' : ''}" data-period="${k}">${l}</button>`).join('');
+}
+
+function render() {
+  const H = bidRows();
+  renderShell(H);
+  const v = document.getElementById('view');
+  v.classList.toggle('anim', !!state.anim); state.anim = false;
+  v.innerHTML = state.section === 'bids' ? bidsView(H) : state.section === 'authorities' ? authView(H) : state.section === 'competitors' ? compView(H) : overview(H);
+  wireMap(H);
+}
+
+/* ---------- overview ---------- */
+function topBy(H, key) {
+  const m = {}; for (const h of H) if (h[key]) m[h[key]] = (m[h[key]] || 0) + (won(h) ? value(h) : 0) + 1e-6;
+  return (Object.entries(m).sort((a, b) => b[1] - a[1])[0] || ['—'])[0];
+}
+function companyHead(s, H) {
+  const m = months(H, (o, h) => { if (!o) return { v: 0 }; if (won(h)) o.v += value(h); });
+  const vals = m.map(x => x[1].v), max = Math.max(1, ...vals), step = 300 / Math.max(1, vals.length - 1);
+  const pts = vals.map((v, i) => [i * step, 88 - (v / max) * 70]);
+  const line = pts.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join('');
+  const priced = H.filter(h => h.offered_price);
+  return `<section class="card hero rise" style="--i:0">
+    <div class="id">
+      <div class="who"><span class="av lg">${initials(COMPANY.display_name)}</span><div style="min-width:0">
+        <h1>${esc(title(COMPANY.display_name))}</h1>
+      </div></div>
+      <dl class="ids"><div><dt>Bidding since</dt><dd>${day(s.first)}</dd></div><div><dt>Last bid</dt><dd>${day(s.last)}</dd></div>
+        <div><dt>Main category</dt><dd>${esc(topBy(H, 'category').replace(/ as per .*$/, ''))}</dd></div><div><dt>Biggest authority</dt><dd>${esc(topBy(H, 'organisation'))}</dd></div>
+        <div><dt>Strongest state</dt><dd>${esc(topBy(H, 'state'))}</dd></div></dl>
+    </div>
+    <div class="fig"><span class="eyebrow">Awarded value</span><span class="big">${inr(s.value)}</span>
+      <span class="sub">${num(s.won)} wins · average bid ${inr(priced.reduce((t, h) => t + h.offered_price, 0) / Math.max(1, priced.length))}</span>
+      <svg class="area" viewBox="0 0 300 92" preserveAspectRatio="none" aria-hidden="true"><path class="a" d="${line}L300 92L0 92Z"/><path class="l" d="${line}"/></svg></div>
+  </section>`;
+}
+function sparkPath(vals, w = 120, h = 24) {
+  const max = Math.max(1, ...vals), step = w / Math.max(1, vals.length - 1);
+  const pts = vals.map((v, i) => [i * step, h - 2 - (v / max) * (h - 4)]);
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('');
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path class="a" d="${line}L${w} ${h}L0 ${h}Z"/><path class="l" d="${line}"/></svg>`;
+}
+function kpis(H, s) {
+  const m = months(H, (o, h) => { if (!o) return { b: 0 }; o.b++; });
+  return `<div class="awstrip rise" style="--i:1">
+    <div class="aw"><span class="k">Bids</span><span class="v">${num(s.bids)}</span>${sparkPath(m.map(x => x[1].b))}</div>
+    <div class="aw"><span class="k">Passed technical</span><span class="v">${num(s.qualified)}</span><span class="s">${pct(s.qualified / Math.max(1, s.bids))} of bids · ${num(s.rejected)} rejected</span></div>
+    <div class="aw"><span class="k">Won</span><span class="v">${num(s.won)}</span><span class="s">${num(s.by_contract)} by contract, ${num(s.won - s.by_contract)} as sole L1</span></div>
+    <div class="aw"><span class="k">Win rate</span><span class="v">${pct(s.rate)}</span><span class="minibar"><i style="--w:${(s.rate || 0).toFixed(3)}"></i></span><span class="s">${pct(s.rate_q)} when qualified</span></div>
+    <div class="aw"><span class="k">Authorities</span><span class="v">${num(s.buyers)}</span><span class="s">Across ${num(s.states)} states</span></div>
+  </div>`;
+}
+function monthChart(H) {
+  const data = months(H, (o, h) => { if (!o) return { won: 0, lost: 0, pend: 0 }; if (h.outcome === 1) o.won++; else if (h.outcome === 0) o.pend++; else o.lost++; });
+  const W = 680, Ht = 220, Lp = 30, Rp = 6, Tp = 8, Bp = 24;
+  const max = Math.max(1, ...data.map(([, o]) => o.won + o.lost + o.pend));
+  const step = niceStep(max), top = Math.ceil(max / step) * step;
+  const y = v => Tp + (Ht - Tp - Bp) * (1 - v / top), bw = (W - Lp - Rp) / data.length;
+  let g = '';
+  for (let v = 0; v <= top; v += step) g += `<line class="grid" x1="${Lp}" x2="${W - Rp}" y1="${y(v)}" y2="${y(v)}"/><text class="lbl" x="${Lp - 6}" y="${y(v) + 3}" text-anchor="end">${v}</text>`;
+  const every = Math.ceil(data.length / 10);
+  data.forEach(([k, o], i) => {
+    const w = Math.min(bw * .62, 22), x = Lp + i * bw + (bw - w) / 2;
+    let base = 0;
+    for (const [key, col] of [['won', 'var(--good)'], ['lost', 'var(--accent-line)'], ['pend', 'var(--warn)']]) {
+      if (!o[key]) continue;
+      g += `<rect x="${x.toFixed(1)}" y="${y(base + o[key]).toFixed(1)}" width="${w.toFixed(1)}" height="${(y(base) - y(base + o[key])).toFixed(1)}" rx="2" style="fill:${col}"><title>${k}: ${o[key]} ${key === 'pend' ? 'pending' : key}</title></rect>`;
+      base += o[key];
+    }
+    if (i % every === 0) { const [yy, mm] = k.split('-'); g += `<text class="lbl" x="${(x + w / 2).toFixed(1)}" y="${Ht - 6}" text-anchor="middle">${MON[+mm - 1]} ${yy.slice(2)}</text>`; }
+  });
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Bids per month by result">${g}</svg></div>`;
+}
+function rankBars(H) {
+  const rows = [['L1', h => h.price_rank === 1, 'var(--good)'], ['L2', h => h.price_rank === 2], ['L3', h => h.price_rank === 3], ['L4 or lower', h => h.price_rank >= 4],
+    ['Rejected in technical', h => h.tech_status === 2, 'var(--crit)']].map(([l, f, c]) => [l, H.filter(f).length, c]);
+  const max = Math.max(1, ...rows.map(r => r[1]));
+  return rows.map(([l, n, c]) => `<div class="brow"><span class="bn">${l === 'L1' ? '<span class="rank l1">L1</span>' : esc(l)}</span>${bar(n / max, c)}<span class="bv">${num(n)}</span></div>`).join('');
+}
+function categories(H) {
+  const m = {};
+  for (const h of H) { const c = (m[h.category] ||= { n: 0, w: 0, v: 0 }); c.n++; if (won(h)) { c.w++; c.v += value(h); } }
+  const rows = Object.entries(m).sort((a, b) => b[1].n - a[1].n), max = rows.length ? rows[0][1].n : 1;
+  return rows.map(([k, c]) => `<div class="catrow"><span class="cn trunc" title="${esc(k)}">${esc(k)}</span><span class="cv">${num(c.w)} won / ${num(c.n)} · ${inr(c.v)}</span>
+    <span class="split" style="width:${(c.n / max * 100).toFixed(1)}%"><i style="width:${(c.w / c.n * 100).toFixed(1)}%;background:var(--good)"></i><i style="flex:1;background:var(--accent-line)"></i></span></div>`).join('');
+}
+function rivalPreview(H) {
+  const rv = rivals(H).sort((a, b) => b.shared - a.shared).slice(0, 6);
+  return rv.map(r => `<button class="rival" data-vs="${r.id}"><span class="av sm them">${initials(r.c.display_name)}</span>
+      <span style="min-width:0"><span class="rn trunc" style="display:block">${esc(title(r.c.display_name))}</span><span class="rs">Met on ${r.shared} bids · last ${day(r.last)}</span></span>
+      <span class="score"><span class="us">${r.our_wins}</span> – <span class="th">${r.their_wins}</span></span></button>`).join('');
+}
+function overview(H) {
+  const s = summary(H);
+  return `${companyHead(s, H)}${kpis(H, s)}
+    <div class="g-21">
+      <section class="card pad rise" style="--i:2"><div class="phead"><h3>Bids per month</h3><div class="row gap12 wrapf">
+        <span class="lg"><span class="sw" style="background:var(--good)"></span>Won</span><span class="lg"><span class="sw" style="background:var(--accent-line)"></span>Lost or rejected</span><span class="lg"><span class="sw" style="background:var(--warn)"></span>Pending</span></div></div>${monthChart(H)}</section>
+      <section class="card pad rise" style="--i:3"><div class="phead"><h3>Price rank</h3><span class="sub">${num(H.filter(h => h.price_rank).length)} priced</span></div>${rankBars(H)}
+        <p class="tiny muted" style="margin-top:12px">Rank in the financial evaluation. Rejected bids never reach it.</p></section>
+    </div>
+    ${orgPanel(H, 4)}
+    <div class="g-12">
+      <section class="card pad rise" style="--i:5"><div class="phead"><h3>Categories</h3><span class="sub">won / bids · awarded value</span></div>${categories(H)}</section>
+      <section class="card pad rise" style="--i:6"><div class="phead"><h3>Most met competitors</h3><button class="link" data-go="competitors">Head to head ${icon('arrow', 14)}</button></div>${rivalPreview(H)}</section>
+    </div>`;
+}
+
+/* ---------- organisations panel with India map ---------- */
+const OFILTERS = [['awarded', 'Awarded', won], ['participated', 'Participated', () => true], ['lost', 'Lost', h => h.outcome === 2 && h.tech_status !== 2],
+  ['rejected', 'Tech rejected', h => h.tech_status === 2], ['pending', 'Pending', h => h.outcome === 0]];
+const PALETTE = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)'];
+function orgData(H) {
+  const o = state.org, f = OFILTERS.find(x => x[0] === o.filter)[2];
+  const metric = o.filter === 'rejected' ? 'count' : o.metric;
+  const amt = h => o.filter === 'awarded' ? value(h) : (h.offered_price || 0);
+  const rows = H.filter(f), orgs = {}, states = {};
+  for (const h of rows) {
+    const v = metric === 'amount' ? amt(h) : 1;
+    const g = (orgs[h.organisation] ||= { name: h.organisation, ministry: h.ministry, states: new Set(), v: 0, n: 0 }); g.v += v; g.n++; if (h.state) g.states.add(h.state);
+    if (h.state) { const s = (states[h.state] ||= { name: h.state, v: 0, n: 0, orgs: new Set() }); s.v += v; s.n++; s.orgs.add(h.organisation); }
+  }
+  const total = Object.values(states).reduce((t, s) => t + s.v, 0);
+  return { metric, total, orgs: Object.values(orgs), states: Object.values(states).sort((a, b) => b.v - a.v), allOrgs: new Set(H.map(h => h.organisation)).size, allStates: new Set(H.map(h => h.state).filter(Boolean)).size };
+}
+const fmtV = (v, metric) => metric === 'amount' ? inr(v) : num(v) + (v === 1 ? ' bid' : ' bids');
+function orgPanel(H, i, full) {
+  const o = state.org, d = orgData(H);
+  let orgs = d.orgs.filter(g => !o.state || g.states.has(o.state)).sort((a, b) => b.v - a.v);
+  if (o.state) {   // within one state, count only that state's share of each organisation
+    const f = OFILTERS.find(x => x[0] === o.filter)[2];
+    orgs = orgs.map(g => { const r = H.filter(h => f(h) && h.organisation === g.name && h.state === o.state); return { ...g, v: r.reduce((t, h) => t + (d.metric === 'amount' ? (o.filter === 'awarded' ? value(h) : h.offered_price || 0) : 1), 0) }; }).sort((a, b) => b.v - a.v);
+  }
+  const otot = orgs.reduce((t, g) => t + g.v, 0) || 1, top = orgs.slice(0, full ? 12 : 5), rest = orgs.slice(top.length);
+  const restV = rest.reduce((t, g) => t + g.v, 0), maxO = Math.max(1e-9, ...top.map(g => g.v), restV);
+  const orgRows = top.map((g, j) => `<div class="orow"><span class="od" style="--c:${PALETTE[j] || 'var(--c6)'}"></span><span style="min-width:0"><span class="on" style="display:block">${esc(g.name)}</span><span class="os">${esc(g.ministry)}</span></span>
+      <span class="ov">${fmtV(g.v, d.metric)}<span class="op">${pct(g.v / otot)}</span></span>${bar(g.v / maxO, PALETTE[j] || 'var(--c6)')}</div>`).join('')
+    + (rest.length ? `<div class="orow"><span class="od" style="--c:var(--c6)"></span><span class="on" style="color:var(--muted)">+ ${rest.length} others</span><span class="ov">${fmtV(restV, d.metric)}<span class="op">${pct(restV / otot)}</span></span>${bar(restV / maxO, 'var(--c6)')}</div>` : '');
+  const maxS = Math.max(1e-9, ...d.states.map(s => s.v));
+  const stateRows = d.states.map(s => `<button class="srow${o.state === s.name ? ' sel' : ''}" data-state="${esc(s.name)}"><span class="sn">${esc(s.name)}</span><span class="sv">${fmtV(s.v, d.metric)}</span>
+      ${bar(s.v / maxS, 'var(--accent)')}<span class="sp">${pct(s.v / (d.total || 1))}</span></button>`).join('');
+  const seg = OFILTERS.map(([k, l]) => `<button class="${o.filter === k ? 'on' : ''}" data-ofilter="${k}">${l}</button>`).join('');
+  const metric = `<button class="${d.metric === 'amount' ? 'on' : ''}" data-metric="amount" ${o.filter === 'rejected' ? 'disabled title="Rejected bids have no price"' : ''}>Amount</button><button class="${d.metric === 'count' ? 'on' : ''}" data-metric="count">Count</button>`;
+  const empty = `<div class="empty"><strong>No ${OFILTERS.find(x => x[0] === o.filter)[1].toLowerCase()} bids</strong><span>Try another result or a longer period.</span></div>`;
+  return `<section class="card orgpanel rise" style="--i:${i}">
+    <div class="orghead"><div class="t"><h2>Authorities</h2><span class="sub mono muted small">${num(d.allOrgs)} authorities · ${num(d.allStates)} states</span></div>
+      <div class="row gap8 wrapf"><div class="seg" role="group" aria-label="Result">${seg}</div><div class="seg acc" role="group" aria-label="Measure">${metric}</div></div></div>
+    <div class="orgbody">
+      <section><div class="phead"><h3>Top authorities${o.state ? ' in ' + esc(o.state) : ''}</h3>${o.state ? `<button class="link" data-state="${esc(o.state)}">Clear state</button>` : full ? '' : `<button class="link" data-go="authorities">View all ${num(d.allOrgs)} ${icon('arrow', 14)}</button>`}</div>${orgs.length ? orgRows : empty}</section>
+      <section><div class="phead"><h3>Operating states</h3><span class="sub">${num(d.states.length)} states · click to filter</span></div>
+        ${d.states.length ? `<div class="maparea"><div class="mapbox" id="mapbox"><div class="maplg"><div class="grad"></div><div class="row" style="justify-content:space-between;gap:10px"><span>${fmtV(Math.min(...d.states.map(s => s.v)), d.metric)}</span><span>${fmtV(maxS, d.metric)}</span></div></div>${mapSvg(d)}</div>
+        <div class="statelist">${stateRows}</div></div>` : empty}</section>
+    </div></section>`;
+}
+function mapSvg(d) {
+  const by = Object.fromEntries(d.states.map(s => [s.name, s])), max = Math.max(1e-9, ...d.states.map(s => s.v));
+  const paths = INDIA.map(p => {
+    const s = by[p.name], f = s ? .12 + .88 * Math.sqrt(s.v / max) : 0;
+    const fill = s ? `color-mix(in srgb,var(--accent) ${(f * 100).toFixed(0)}%,var(--map-land))` : 'var(--map-land)';
+    const cls = state.org.state ? (state.org.state === p.name ? 'sel' : 'dim') : '';
+    return `<path d="${p.d}" data-name="${esc(p.name)}" class="${cls}" style="fill:${fill}"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 612 696" role="img" aria-label="Map of India shaded by ${d.metric}">${paths}</svg>`;
+}
+function wireMap(H) {
+  const box = document.getElementById('mapbox');
+  if (!box) return;
+  const d = orgData(H), by = Object.fromEntries(d.states.map(s => [s.name, s]));
+  let tip = null;
+  box.addEventListener('mousemove', e => {
+    const p = e.target.closest('path');
+    if (!p) { tip && tip.remove(); tip = null; return; }
+    const s = by[p.dataset.name];
+    if (!tip) { tip = document.createElement('div'); tip.className = 'maptip'; box.appendChild(tip); }
+    tip.innerHTML = `<b>${esc(p.dataset.name)}</b>` + (s ? `<div class="r"><span>${d.metric === 'amount' ? 'Amount' : 'Bids'}</span><span>${fmtV(s.v, d.metric)}</span></div>
+      <div class="r"><span>Share</span><span>${pct(s.v / (d.total || 1))}</span></div><div class="r"><span>Authorities</span><span>${s.orgs.size}</span></div>` : `<div class="r"><span>No bids here</span><span></span></div>`);
+    const r = box.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    tip.style.left = Math.min(x + 14, r.width - 175) + 'px'; tip.style.top = Math.max(6, y - 70) + 'px';
+  });
+  box.addEventListener('mouseleave', () => { tip && tip.remove(); tip = null; });
+}
+
+/* ---------- bids ---------- */
+const BFILTERS = [['all', 'All', () => true], ['won', 'Won', won], ['lost', 'Lost', h => h.outcome === 2 && h.tech_status !== 2], ['pending', 'Pending', h => h.outcome === 0], ['rejected', 'Rejected', h => h.tech_status === 2]];
+function result(h) {
+  if (h.tech_status === 2) return `<span class="badge badge-crit">Rejected</span>`;
+  if (h.outcome === 1) return `<span class="row gap6 wrapf"><span class="badge badge-good">Won</span><span class="evi${h.outcome_source === 1 ? ' ver' : ''}">${h.outcome_source === 1 ? 'Contract' : 'Sole L1'}</span></span>`;
+  if (h.outcome === 2) return `<span class="badge">Lost</span>`;
+  return `<span class="badge badge-warn">Pending</span>`;
+}
+function bidsView(H) {
+  const b = state.bids, q = b.q.trim().toLowerCase();
+  const rows = H.filter(BFILTERS.find(x => x[0] === b.f)[2]).filter(h => !q || [h.bid_number, h.ra_number, h.category, h.organisation, h.state].some(x => (x || '').toLowerCase().includes(q)));
+  const per = 25, pages = Math.max(1, Math.ceil(rows.length / per)); b.page = Math.min(b.page, pages - 1);
+  const chips = BFILTERS.map(([k, l, f]) => `<button class="chip${b.f === k ? ' on' : ''}" data-bf="${k}">${l}<span class="n">${num(H.filter(f).length)}</span></button>`).join('');
+  const body = rows.slice(b.page * per, b.page * per + per).map(h => `<tr>
+      <td class="num" style="white-space:nowrap">${day(h.bid_end_at)}</td>
+      <td><span class="mono small">${esc(h.bid_number)}</span>${h.ra_number ? `<span class="sub mono">RA ${esc(h.ra_number)}</span>` : ''}</td>
+      <td style="max-width:300px"><span class="trunc" style="display:block" title="${esc(h.category)}">${esc(h.category)}</span><span class="sub">${esc(h.offered_make)} · ${esc(h.offered_model)} · qty ${num(h.quantity)}</span></td>
+      <td class="hide-sm" style="max-width:260px"><span class="trunc" style="display:block">${esc(h.organisation)}</span><span class="sub trunc">${esc([h.office, h.state].filter(Boolean).join(', ') || '—')}</span></td>
+      <td>${h.price_rank ? `<span class="rank${h.price_rank === 1 ? ' l1' : ''}">L${h.price_rank}</span>` : '<span class="faint">—</span>'}</td>
+      <td class="r">${inr(h.offered_price)}${h.contract_total ? `<span class="sub">contract ${inr(h.contract_total)}</span>` : ''}</td>
+      <td>${result(h)}</td></tr>`).join('');
+  return `<div class="pagehead rise" style="--i:0"><div class="eyebrow">Bids</div><h1 style="margin-top:4px">Every bid on an awarded tender</h1></div>
+    <section class="card rise" style="--i:1">
+      <div class="toolbar"><div class="row gap6 wrapf">${chips}</div>
+        <div class="search" style="margin-left:auto;width:min(320px,100%)">${icon('search', 15)}<input class="input" id="bq" type="search" placeholder="Bid number, category, authority or state" value="${esc(b.q)}" aria-label="Search bids"></div></div>
+      ${rows.length ? `<div class="scroll-x"><table class="tbl"><thead><tr><th>Bid end</th><th>Bid</th><th>Category</th><th class="hide-sm">Authority</th><th>Rank</th><th class="r">Offered</th><th>Result</th></tr></thead><tbody>${body}</tbody></table></div>`
+        : `<div class="empty"><strong>No bids match</strong><span>Clear the search or pick another result.</span></div>`}
+      <div class="pager"><span>${num(rows.length)} bids · page ${b.page + 1} of ${pages}</span><span class="row gap6"><button class="btn" data-page="-1" ${b.page ? '' : 'disabled'}>Previous</button><button class="btn" data-page="1" ${b.page < pages - 1 ? '' : 'disabled'}>Next</button></span></div>
+    </section>`;
+}
+
+/* ---------- authorities ---------- */
+function authView(H) {
+  const q = state.auth.q.trim().toLowerCase(), m = {};
+  for (const h of H) {
+    const a = (m[h.buyer_org_id] ||= { ...(A[h.buyer_org_id] || NO_AUTH), bids: 0, won: 0, value: 0, last: '' });
+    a.bids++; if (won(h)) { a.won++; a.value += value(h); } if (h.bid_end_at > a.last) a.last = h.bid_end_at;
+  }
+  const rows = Object.values(m).filter(a => !q || [a.organisation, a.office, a.ministry, a.state].some(x => (x || '').toLowerCase().includes(q))).sort((a, b) => b.value - a.value || b.bids - a.bids);
+  const body = rows.map(a => `<tr><td style="max-width:380px"><span class="name trunc" style="display:block">${esc(a.organisation)}</span><span class="sub trunc">${esc([/^\*+$/.test(a.office || '') ? '' : a.office, a.ministry].filter(Boolean).join(' · '))}</span></td>
+      <td class="hide-sm">${esc(a.state || '—')}</td><td class="r">${num(a.bids)}</td><td class="r">${num(a.won)}</td><td class="r">${pct(a.won / a.bids, 0)}</td><td class="r"><b>${inr(a.value)}</b></td><td class="hide-sm" style="white-space:nowrap">${day(a.last)}</td></tr>`).join('');
+  return `<div class="pagehead rise" style="--i:0"><div class="eyebrow">Authorities</div><h1 style="margin-top:4px">Who this company sells to</h1></div>
+    ${orgPanel(H, 1, true)}
+    <section class="card rise" style="--i:2"><div class="toolbar"><h3>Every buying office</h3>
+      <div class="search" style="margin-left:auto;width:min(320px,100%)">${icon('search', 15)}<input class="input" id="aq" type="search" placeholder="Authority, office, ministry or state" value="${esc(state.auth.q)}" aria-label="Search authorities"></div></div>
+      ${rows.length ? `<div class="scroll-x"><table class="tbl"><thead><tr><th>Authority</th><th class="hide-sm">State</th><th class="r">Bids</th><th class="r">Won</th><th class="r">Win rate</th><th class="r">Awarded value</th><th class="hide-sm">Last bid</th></tr></thead><tbody>${body}</tbody></table></div>`
+        : `<div class="empty"><strong>No authority matches</strong><span>Clear the search to see all of them.</span></div>`}</section>`;
+}
+
+/* ---------- competitors: list + head to head ---------- */
+function compView(H) {
+  const all = rivals(H), sel = all.find(r => r.id === state.comp.id);
+  if (state.comp.id != null && sel) return `<div class="backrow rise" style="--i:0"><button class="btn" data-back="1">${icon('back', 15)}All competitors</button>
+      <span class="small muted">${esc(title(sel.c.display_name))}</span></div>${h2h(H, sel)}`;
+  const q = state.comp.q.trim().toLowerCase();
+  const list = all.filter(r => !q || r.c.display_name.toLowerCase().includes(q))
+    .sort(state.comp.sort === 'won' ? (a, b) => b.their_wins - a.their_wins || b.shared - a.shared : state.comp.sort === 'beat' ? (a, b) => (b.lost_to - b.beat) - (a.lost_to - a.beat) : (a, b) => b.shared - a.shared);
+  const sorts = [['met', 'Met most'], ['won', 'They won most'], ['beat', 'Undercut you']].map(([k, l]) => `<button class="${state.comp.sort === k ? 'on' : ''}" data-csort="${k}">${l}</button>`).join('');
+  const rows = list.map(r => {
+    const rest = Math.max(0, r.shared - r.our_wins - r.their_wins);
+    return `<tr class="clickable" data-vs="${r.id}" tabindex="0">
+      <td><span class="row gap10"><span class="av sm them">${initials(r.c.display_name)}</span><span class="name">${esc(title(r.c.display_name))}</span></span></td>
+      <td class="r">${num(r.shared)}</td><td class="r"><span class="us-n">${num(r.our_wins)}</span></td><td class="r"><span class="th-n">${num(r.their_wins)}</span></td>
+      <td class="hide-sm"><span class="mtug" title="You ${r.our_wins}, them ${r.their_wins}, others ${rest}">${r.our_wins ? `<i style="flex:${r.our_wins};background:var(--accent)"></i>` : ''}${rest ? `<i style="flex:${rest};background:var(--surface-3)"></i>` : ''}${r.their_wins ? `<i style="flex:${r.their_wins};background:var(--warn)"></i>` : ''}</span></td>
+      <td class="r hide-sm">${num(r.beat)} / ${num(r.lost_to)}</td>
+      <td class="hide-sm" style="white-space:nowrap">${day(r.last)}</td><td class="go">${icon('arrow', 15)}</td></tr>`;
+  }).join('');
+  return `<div class="pagehead rise" style="--i:0"><div class="eyebrow">Competitors</div><h1 style="margin-top:4px">Who this company bids against</h1></div>
+    <section class="card rise" style="--i:1">
+      <div class="toolbar"><div class="search" style="width:min(340px,100%)">${icon('search', 15)}<input class="input" id="cq" type="search" placeholder="Search competitors" value="${esc(state.comp.q)}" aria-label="Search competitors"></div>
+        <div class="seg" role="group" aria-label="Sort competitors">${sorts}</div><span class="sub small muted" style="margin-left:auto">${num(list.length)} of ${num(all.length)}</span></div>
+      ${list.length ? `<div class="scroll-x"><table class="tbl"><thead><tr><th>Competitor</th><th class="r">Met on</th><th class="r">You won</th><th class="r">They won</th><th class="hide-sm">Shared bids</th><th class="r hide-sm">Cheaper / dearer</th><th class="hide-sm">Last met</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`
+        : `<div class="empty"><strong>No competitor matches “${esc(state.comp.q)}”</strong><span>Try part of the name.</span></div>`}
+      <p class="tiny muted" style="padding:4px 20px 18px">Open a competitor to see the head to head. Cheaper / dearer counts the shared bids where your price ranked above or below theirs.</p>
+    </section>`;
+}
+function h2h(H, r) {
+  const shared = H.filter(h => BY_TENDER[h.tender_id].some(p => p.company_id === r.id))
+    .map(h => ({ us: h, them: BY_TENDER[h.tender_id].find(p => p.company_id === r.id), t: h })).sort((a, b) => b.t.bid_end_at.localeCompare(a.t.bid_end_at));
+  const other = shared.filter(x => x.us.outcome !== 1 && x.them.outcome !== 1 && x.us.outcome !== 0).length;
+  const n = shared.length, ourW = r.our_wins, theirW = r.their_wins, pend = n - ourW - theirW - other;
+  const both = shared.filter(x => x.us.offered_price && x.them.offered_price);
+  const gap = both.length ? both.reduce((t, x) => t + (x.us.offered_price - x.them.offered_price) / x.them.offered_price, 0) / both.length : null;
+  const avgRank = side => { const v = shared.map(x => x[side].price_rank).filter(Boolean); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const metrics = [
+    ['Wins when both bid', ourW, theirW, true],
+    ['Finished L1', shared.filter(x => x.us.price_rank === 1).length, shared.filter(x => x.them.price_rank === 1).length, true],
+    ['Lower price of the two', r.beat, r.lost_to, true],
+    ['Average price rank', avgRank('us'), avgRank('them'), false, v => v == null ? '—' : v.toFixed(2)],
+    ['Rejected in technical', shared.filter(x => x.us.tech_status === 2).length, shared.filter(x => x.them.tech_status === 2).length, false],
+    ['Won by contract', shared.filter(x => x.us.outcome === 1 && x.us.outcome_source === 1).length, shared.filter(x => x.them.outcome === 1 && x.them.outcome_source === 1).length, true],
+  ];
+  const cmpRows = metrics.map(([l, a, b, hi, f]) => {
+    const fm = f || num, mx = Math.max(1e-9, a || 0, b || 0);
+    const aBetter = a != null && b != null && (hi ? a > b : a < b), bBetter = a != null && b != null && (hi ? b > a : b < a);
+    return `<div class="cmp"><span class="cv l ${aBetter ? 'better' : bBetter ? 'worse' : ''}">${fm(a)}${bar((a || 0) / mx, 'var(--accent)')}</span><span class="ml">${l}</span><span class="cv ${bBetter ? 'better' : aBetter ? 'worse' : ''}">${bar((b || 0) / mx, 'var(--warn)')}${fm(b)}</span></div>`;
+  }).join('');
+  const m = months(shared.map(x => x.us), (o, h) => { if (!o) return { us: 0, them: 0, oth: 0 }; const th = BY_TENDER[h.tender_id].find(p => p.company_id === r.id); if (h.outcome === 1) o.us++; else if (th.outcome === 1) o.them++; else o.oth++; });
+  const cats = {}; for (const x of shared) cats[x.t.category] = (cats[x.t.category] || 0) + 1;
+  const catChips = Object.entries(cats).filter(([k]) => k && k !== 'null').sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span class="badge" title="${esc(k)}">${esc(k.length > 46 ? k.slice(0, 44) + '…' : k)} <span class="mono">${v}</span></span>`).join('');
+  const table = shared.slice(0, 40).map(x => `<tr><td style="white-space:nowrap">${day(x.t.bid_end_at)}</td>
+      <td><span class="mono small">${esc(x.t.bid_number)}</span><span class="sub trunc" style="max-width:240px">${esc(x.t.organisation)}</span></td>
+      <td>${x.us.price_rank ? `<span class="rank${x.us.price_rank === 1 ? ' l1' : ''}">L${x.us.price_rank}</span>` : '<span class="badge badge-crit">Rej</span>'}<span class="sub mono">${inr(x.us.offered_price)}</span></td>
+      <td>${x.them.price_rank ? `<span class="rank${x.them.price_rank === 1 ? ' l1' : ''}">L${x.them.price_rank}</span>` : '<span class="badge badge-crit">Rej</span>'}<span class="sub mono">${inr(x.them.offered_price)}</span></td>
+      <td>${x.us.outcome === 1 ? '<span class="badge badge-accent">You</span>' : x.them.outcome === 1 ? '<span class="badge badge-warn">Them</span>' : x.us.outcome === 0 ? '<span class="badge">Pending</span>' : '<span class="badge">Someone else</span>'}</td></tr>`).join('');
+  return `<section class="card rise" style="--i:1">
+      <div class="h2h-head"><div class="side"><span class="av">${initials(COMPANY.display_name)}</span><div style="min-width:0"><div class="sn">${esc(short(COMPANY.display_name))}</div><div class="tiny muted">This company</div></div></div>
+        <span class="vs">VS</span>
+        <div class="side r"><span class="av them">${initials(r.c.display_name)}</span><div style="min-width:0"><div class="sn">${esc(short(r.c.display_name))}</div><div class="tiny muted">Last met ${day(r.last)}</div></div></div></div>
+      <div class="tug"><div class="bar">${ourW ? `<i style="flex:${ourW};background:var(--accent)"></i>` : ''}${other ? `<i style="flex:${other};background:var(--surface-3)"></i>` : ''}${pend ? `<i style="flex:${pend};background:var(--warn-soft)"></i>` : ''}${theirW ? `<i style="flex:${theirW};background:var(--warn)"></i>` : ''}</div>
+        <div class="lbls"><span><b>${ourW}</b> you won</span><span>${n} bids together · ${other} to someone else${pend ? ' · ' + pend + ' pending' : ''}</span><span>they won <b>${theirW}</b></span></div></div>
+    </section>
+    <div class="g-12">
+      <section class="card pad rise" style="--i:2"><div class="phead"><h3>Side by side</h3><span class="sub">on the ${n} shared bids</span></div>${cmpRows}
+        <p class="tiny muted" style="margin-top:12px">${gap == null ? 'No bid where both were priced.' : `When both were priced, your offer averaged <b class="mono">${(gap * 100).toFixed(1)}%</b> ${gap < 0 ? 'below' : 'above'} theirs.`}</p></section>
+      <section class="card pad rise" style="--i:3"><div class="phead"><h3>Meetings per month</h3><div class="row gap12 wrapf"><span class="lg"><span class="sw" style="background:var(--accent)"></span>You won</span><span class="lg"><span class="sw" style="background:var(--warn)"></span>They won</span><span class="lg"><span class="sw" style="background:var(--border-strong)"></span>Other</span></div></div>
+        ${stackChart(m)}<div class="eyebrow" style="margin:14px 0 8px">Where you meet</div><div class="row gap6 wrapf">${catChips}</div></section>
+    </div>
+    <section class="card rise" style="--i:4"><div class="toolbar"><h3>Bids you both made</h3><span class="sub mono muted small" style="margin-left:auto">latest ${Math.min(40, n)} of ${n}</span></div>
+      <div class="scroll-x"><table class="tbl"><thead><tr><th>Bid end</th><th>Bid and authority</th><th>You</th><th>${esc(short(r.c.display_name).split(' ').slice(0, 2).join(' '))}</th><th>Won by</th></tr></thead><tbody>${table}</tbody></table></div></section>`;
+}
+function stackChart(data) {
+  const W = 520, Ht = 170, Lp = 24, Rp = 4, Tp = 6, Bp = 22;
+  const max = Math.max(1, ...data.map(([, o]) => o.us + o.them + o.oth)), step = niceStep(max, 4), top = Math.ceil(max / step) * step;
+  const y = v => Tp + (Ht - Tp - Bp) * (1 - v / top), bw = (W - Lp - Rp) / data.length;
+  let g = '';
+  for (let v = 0; v <= top; v += step) g += `<line class="grid" x1="${Lp}" x2="${W - Rp}" y1="${y(v)}" y2="${y(v)}"/><text class="lbl" x="${Lp - 5}" y="${y(v) + 3}" text-anchor="end">${v}</text>`;
+  const every = Math.ceil(data.length / 7);
+  data.forEach(([k, o], i) => {
+    const w = Math.min(bw * .6, 16), x = Lp + i * bw + (bw - w) / 2; let base = 0;
+    for (const [key, col] of [['us', 'var(--accent)'], ['them', 'var(--warn)'], ['oth', 'var(--border-strong)']]) {
+      if (!o[key]) continue;
+      g += `<rect x="${x.toFixed(1)}" y="${y(base + o[key]).toFixed(1)}" width="${w.toFixed(1)}" height="${(y(base) - y(base + o[key])).toFixed(1)}" rx="2" style="fill:${col}"/>`; base += o[key];
+    }
+    if (i % every === 0) { const [yy, mm] = k.split('-'); g += `<text class="lbl" x="${(x + w / 2).toFixed(1)}" y="${Ht - 5}" text-anchor="middle">${MON[+mm - 1]} ${yy.slice(2)}</text>`; }
+  });
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Meetings per month">${g}</svg></div>`;
+}
+
+/* ---------- events ---------- */
+function setHash(h) { try { history.replaceState(null, '', '#' + h); } catch (e) {} }
+function go(section) { state.section = section; state.anim = true; if (section === 'competitors') state.comp.id = null; setHash(section); render(); window.scrollTo(0, 0); }
+async function openRival(id) {
+  state.section = 'competitors'; state.comp.id = id; state.anim = true; setHash('vs-' + id);
+  if (!LOADED.has(id)) {
+    document.getElementById('view').innerHTML = '<div class="empty"><strong>Loading the head to head…</strong></div>';
+    try { await loadRival(id); } catch (e) { state.comp.id = null; render(); return; }
+  }
+  render(); window.scrollTo(0, 0);
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('button');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.go) return go(d.go);
+  if (d.period) { state.period = d.period; state.anim = true; return render(); }
+  if (d.ofilter) { state.org.filter = d.ofilter; return render(); }
+  if (d.metric && !t.disabled) { state.org.metric = d.metric; return render(); }
+  if (d.state) { state.org.state = state.org.state === d.state ? null : d.state; return render(); }
+  if (d.bf) { state.bids.f = d.bf; state.bids.page = 0; return render(); }
+  if (d.page) { state.bids.page += +d.page; return render(); }
+  if (d.csort) { state.comp.sort = d.csort; return render(); }
+  if (d.back) return go('competitors');
+});
+document.addEventListener('click', e => { const r = e.target.closest('[data-vs]'); if (r) openRival(+r.dataset.vs); });
+document.addEventListener('keydown', e => { const r = e.target.closest && e.target.closest('tr[data-vs]'); if (r && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openRival(+r.dataset.vs); } });
+document.addEventListener('click', e => { const p = e.target.closest('#mapbox path'); if (p && document.querySelector(`.srow[data-state="${CSS.escape(p.dataset.name)}"]`)) { state.org.state = state.org.state === p.dataset.name ? null : p.dataset.name; render(); } });
+let typing;
+document.addEventListener('input', e => {
+  const id = e.target.id, v = e.target.value;
+  if (!['bq', 'aq', 'cq'].includes(id)) return;
+  clearTimeout(typing);
+  typing = setTimeout(() => {
+    if (id === 'bq') { state.bids.q = v; state.bids.page = 0; } else if (id === 'aq') state.auth.q = v; else state.comp.q = v;
+    render();
+    const el = document.getElementById(id); if (el) { el.focus(); el.setSelectionRange(v.length, v.length); }
+  }, 160);
+});
+/* ---------- company search (the start page) ---------- */
+const home = { q: '', rows: null, error: '' };
+function homeView() {
+  const rows = home.rows, typed = home.q.trim().length >= 2;
+  const body = (rows || []).map(c => `<tr class="clickable" data-co="${c.company_id}" tabindex="0">
+      <td><span class="row gap10"><span class="av sm">${initials(c.display_name)}</span><a class="name" href="?c=${c.company_id}">${esc(title(c.display_name))}</a></span></td>
+      <td class="r">${num(c.total_bids)}</td><td class="r">${num(c.awarded_bids)}</td><td class="r hide-sm">${pct(c.win_rate)}</td>
+      <td class="r"><b>${inr(c.awarded_value)}</b></td><td class="go">${icon('arrow', 15)}</td></tr>`).join('');
+  const list = home.error ? `<div class="empty"><strong>${esc(home.error)}</strong><span>Try again in a moment.</span></div>`
+    : rows == null ? `<div class="empty"><strong>Loading…</strong></div>`
+    : rows.length ? `<div class="scroll-x"><table class="tbl"><thead><tr><th>Company</th><th class="r">Bids</th><th class="r">Won</th><th class="r hide-sm">Win rate</th><th class="r">Awarded value</th><th></th></tr></thead><tbody>${body}</tbody></table></div>`
+    : `<div class="empty"><strong>No company matches “${esc(home.q)}”</strong><span>Try part of the name.</span></div>`;
+  return `<div class="pagehead rise" style="--i:0"><div class="eyebrow">Companies</div><h1 style="margin-top:4px">Find a company</h1></div>
+    <section class="card rise" style="--i:1">
+      <div class="toolbar"><div class="search" style="width:min(420px,100%)">${icon('search', 15)}<input class="input" id="hq" type="search" placeholder="Company name, at least 2 letters" value="${esc(home.q)}" aria-label="Search companies"></div>
+        <span class="sub small muted" style="margin-left:auto">${typed ? 'Best matches, most bids first' : 'Most active companies'}</span></div>
+      ${list}</section>`;
+}
+function renderHome() {
+  document.getElementById('sidenav').innerHTML = `<div class="sidegrp">${NAME}</div><button class="sideitem on">${icon('search')}<span>Find a company</span></button>`;
+  document.getElementById('mtabs').innerHTML = '';
+  document.getElementById('crumbs').innerHTML = '<span>Companies</span>';
+  document.getElementById('period').innerHTML = '';
+  document.getElementById('view').innerHTML = homeView();
+}
+async function searchCompanies() {
+  const q = home.q;
+  try { const d = await getJSON('/api/companies?q=' + encodeURIComponent(q.trim())); if (q !== home.q) return; home.rows = d.companies; home.error = ''; }
+  catch (e) { home.error = e.message; }
+  renderHome();
+  const el = document.getElementById('hq'); if (el && q) { el.focus(); el.setSelectionRange(q.length, q.length); }
+}
+let homeTyping;
+document.addEventListener('input', e => {
+  if (e.target.id !== 'hq') return;
+  home.q = e.target.value; clearTimeout(homeTyping); homeTyping = setTimeout(searchCompanies, 250);
+});
+document.addEventListener('click', e => { const r = e.target.closest('tr[data-co]'); if (r && !e.target.closest('a')) location.href = '?c=' + r.dataset.co; });
+document.addEventListener('keydown', e => { const r = e.target.closest && e.target.closest('tr[data-co]'); if (r && e.key === 'Enter') location.href = '?c=' + r.dataset.co; });
+
+/* ---------- start ---------- */
+(async () => {
+  const id = new URLSearchParams(location.search).get('c');
+  const view = document.getElementById('view');
+  fetch('india.json').then(r => r.json()).then(paths => { INDIA = paths; if (COMPANY) render(); }).catch(() => {});
+  if (!id) { renderHome(); return searchCompanies(); }
+  view.innerHTML = '<div class="empty"><strong>Loading company…</strong><span>Bids, authorities and competitors.</span></div>';
+  try { await loadCompany(id); }
+  catch (e) { view.innerHTML = `<div class="empty"><strong>${esc(e.message)}</strong><a class="btn" href="./">Find a company</a></div>`; return; }
+  document.title = title(COMPANY.display_name) + ' · ' + NAME;
+  if (LIMITED) { const n = document.getElementById('note'); n.hidden = false; n.textContent = 'Latest bids only'; n.title = 'This company has more bids than the page loads; the oldest are left out.'; }
+  const startAt = location.hash.slice(1);
+  if (SECTIONS.some(s => s[0] === startAt)) state.section = startAt;
+  const vsAt = /^vs-(\d+)$/.exec(startAt);
+  if (vsAt) { state.section = 'competitors'; state.comp.id = +vsAt[1]; try { await loadRival(+vsAt[1]); } catch (e) { state.comp.id = null; } }
+  state.anim = true;
+  render();
+})();
+addEventListener('hashchange', () => { const h = location.hash.slice(1), vs = /^vs-(\d+)$/.exec(h); if (!COMPANY) return;
+  if (vs) { if (+vs[1] !== state.comp.id) openRival(+vs[1]); } else if (SECTIONS.some(s => s[0] === h) && h !== state.section) go(h); });
+</script>

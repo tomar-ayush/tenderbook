@@ -1,0 +1,12 @@
+{
+  "name": "tenderbook",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node scripts/dev.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}
