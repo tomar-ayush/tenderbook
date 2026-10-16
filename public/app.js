@@ -46,7 +46,7 @@ function summary(H) {
   return { bids: H.length, qualified: q.length, won: w.length, value: w.reduce((s, h) => s + value(h), 0),
     rate: decided.length ? w.length / decided.length : null, rate_q: q.length ? w.length / q.length : null,
     buyers: new Set(H.map(h => h.buyer_org_id)).size, states: new Set(H.map(h => h.state).filter(Boolean)).size,
-    by_contract: w.filter(h => h.outcome_source === 1).length, pending: H.filter(h => h.outcome === 0).length,
+    by_contract: w.filter(h => h.outcome_source === 1).length, tied: w.filter(h => h.outcome_source === 3).length, pending: H.filter(h => h.outcome === 0).length,
     rejected: H.filter(h => h.tech_status === 2).length, first: dates[0], last: dates[dates.length - 1] };
 }
 function months(H, split) {
@@ -147,7 +147,7 @@ function kpis(H, s) {
   return `<div class="awstrip rise" style="--i:1">
     <div class="aw"><span class="k">Bids</span><span class="v">${num(s.bids)}</span>${sparkPath(m.map(x => x[1].b))}</div>
     <div class="aw"><span class="k">Passed technical</span><span class="v">${num(s.qualified)}</span><span class="s">${pct(s.qualified / Math.max(1, s.bids))} of bids · ${num(s.rejected)} rejected</span></div>
-    <div class="aw"><span class="k">Won</span><span class="v">${num(s.won)}</span><span class="s">${num(s.by_contract)} by contract, ${num(s.won - s.by_contract)} as sole L1</span></div>
+    <div class="aw"><span class="k">Won</span><span class="v">${num(s.won)}</span><span class="s">${num(s.by_contract)} by contract, ${num(s.won - s.by_contract - s.tied)} sole L1${s.tied ? ', ' + num(s.tied) + ' tied L1' : ''}</span></div>
     <div class="aw"><span class="k">Win rate</span><span class="v">${pct(s.rate)}</span><span class="minibar"><i style="--w:${(s.rate || 0).toFixed(3)}"></i></span><span class="s">${pct(s.rate_q)} when qualified</span></div>
     <div class="aw"><span class="k">Authorities</span><span class="v">${num(s.buyers)}</span><span class="s">Across ${num(s.states)} states</span></div>
   </div>`;
@@ -286,7 +286,7 @@ function wireMap(H) {
 const BFILTERS = [['all', 'All', () => true], ['won', 'Won', won], ['lost', 'Lost', h => h.outcome === 2 && h.tech_status !== 2], ['pending', 'Pending', h => h.outcome === 0], ['rejected', 'Rejected', h => h.tech_status === 2]];
 function result(h) {
   if (h.tech_status === 2) return `<span class="badge badge-crit">Rejected</span>`;
-  if (h.outcome === 1) return `<span class="row gap6 wrapf"><span class="badge badge-good">Won</span><span class="evi${h.outcome_source === 1 ? ' ver' : ''}">${h.outcome_source === 1 ? 'Contract' : 'Sole L1'}</span></span>`;
+  if (h.outcome === 1) return `<span class="row gap6 wrapf"><span class="badge badge-good">Won</span><span class="evi${h.outcome_source === 1 ? ' ver' : ''}">${h.outcome_source === 1 ? 'Contract' : h.outcome_source === 3 ? 'L1 tie' : 'Sole L1'}</span></span>`;
   if (h.outcome === 2) return `<span class="badge">Lost</span>`;
   return `<span class="badge badge-warn">Pending</span>`;
 }

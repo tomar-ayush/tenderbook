@@ -204,6 +204,14 @@ assert "Bidally" not in s, "the old name is still in the page" and "TENDERS" not
 # keep the company's name in the tab title; Next's router puts the default title back when the hash changes
 rep("  const H = bidRows();\n  renderShell(H);", "  const H = bidRows();\n  document.title = title(COMPANY.display_name) + ' · ' + NAME;\n  renderShell(H);")
 
+# 11. outcome_source 3 is a tied L1 counted as won until a contract names the winner
+rep("by_contract: w.filter(h => h.outcome_source === 1).length, pending:",
+    "by_contract: w.filter(h => h.outcome_source === 1).length, tied: w.filter(h => h.outcome_source === 3).length, pending:")
+rep("${num(s.by_contract)} by contract, ${num(s.won - s.by_contract)} as sole L1",
+    "${num(s.by_contract)} by contract, ${num(s.won - s.by_contract - s.tied)} sole L1${s.tied ? ', ' + num(s.tied) + ' tied L1' : ''}")
+rep("${h.outcome_source === 1 ? 'Contract' : 'Sole L1'}",
+    "${h.outcome_source === 1 ? 'Contract' : h.outcome_source === 3 ? 'L1 tie' : 'Sole L1'}")
+
 # 10. split into the Next.js app: the CSS, the HTML shell (rendered by app/page.js) and the page script (public/app.js)
 import json
 style = s[s.index("<style>\n") + 8:s.index("</style>")]
