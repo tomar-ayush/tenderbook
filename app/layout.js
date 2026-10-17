@@ -1,7 +1,7 @@
 import './design.css';
 
 export const metadata = {
-  title: 'Tenderbook',
+  title: 'Wintender',
   description: 'Bid history, authorities and competitors of GeM sellers.',
 };
 

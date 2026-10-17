@@ -1,4 +1,4 @@
-# Tenderbook
+# Wintender
 
 Bid history, buyers and competitors of every seller on GeM, read live from the pipeline's PostgreSQL.
 A Next.js app: the page and its API in one project, so Vercel deploys both from a `git push`.

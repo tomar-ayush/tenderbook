@@ -5,7 +5,7 @@
 import re
 from pathlib import Path
 
-NAME = "Tenderbook"
+NAME = "Wintender"
 SITE = Path(__file__).resolve().parents[1]
 import sys
 SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else SITE.parent / "company-analysis/company.src.html"
@@ -88,21 +88,30 @@ rep("</style>", """.crumblink{color:inherit;text-decoration:none}.crumblink:hove
 # 6. a search page when no company is chosen, and startup that loads the data first
 rep("const startAt = location.hash.slice(1);\nif (SECTIONS.some(s => s[0] === startAt)) state.section = startAt;\nconst vsAt = /^vs-(\\d+)$/.exec(startAt);\nif (vsAt) { state.section = 'competitors'; state.comp.id = +vsAt[1]; }\nstate.anim = true;\nrender();\n",
 r"""/* ---------- company search (the start page) ---------- */
-const home = { q: '', rows: null, error: '' };
+const HSORTS = [['bids', 'Most bids'], ['won', 'Most wins'], ['value', 'Awarded value'], ['rate', 'Win rate'], ['name', 'Name']];
+const startArgs = new URLSearchParams(location.search);
+const home = { q: startArgs.get('q') || '', sort: HSORTS.some(x => x[0] === startArgs.get('sort')) ? startArgs.get('sort') : 'bids',
+  page: Math.max(0, parseInt(startArgs.get('page'), 10) || 0), rows: null, total: 0, per: 50, rateMin: 10, error: '' };
 function homeView() {
   const rows = home.rows, typed = home.q.trim().length >= 2;
   const body = (rows || []).map(c => `<tr class="clickable" data-co="${c.company_id}" tabindex="0">
       <td><span class="row gap10"><span class="av sm">${initials(c.display_name)}</span><a class="name" href="?c=${c.company_id}">${esc(title(c.display_name))}</a></span></td>
       <td class="r">${num(c.total_bids)}</td><td class="r">${num(c.awarded_bids)}</td><td class="r hide-sm">${pct(c.win_rate)}</td>
       <td class="r"><b>${inr(c.awarded_value)}</b></td><td class="go">${icon('arrow', 15)}</td></tr>`).join('');
+  const pages = Math.max(1, Math.ceil(home.total / home.per)), from = home.page * home.per;
+  const sorts = HSORTS.map(([k, l]) => `<button class="${home.sort === k ? 'on' : ''}" data-hsort="${k}">${l}</button>`).join('');
+  const what = home.sort === 'rate' ? `companies with at least ${home.rateMin} bids` : typed ? 'matching companies' : 'companies';
   const list = home.error ? `<div class="empty"><strong>${esc(home.error)}</strong><span>Try again in a moment.</span></div>`
     : rows == null ? `<div class="empty"><strong>Loading…</strong></div>`
-    : rows.length ? `<div class="scroll-x"><table class="tbl"><thead><tr><th>Company</th><th class="r">Bids</th><th class="r">Won</th><th class="r hide-sm">Win rate</th><th class="r">Awarded value</th><th></th></tr></thead><tbody>${body}</tbody></table></div>`
+    : rows.length ? `<div class="scroll-x"><table class="tbl"><thead><tr><th>Company</th><th class="r">Bids</th><th class="r">Won</th><th class="r hide-sm">Win rate</th><th class="r">Awarded value</th><th></th></tr></thead><tbody>${body}</tbody></table></div>
+      <div class="pager"><span>${num(from + 1)}–${num(from + rows.length)} of ${num(home.total)} ${what} · page ${num(home.page + 1)} of ${num(pages)}</span>
+        <span class="row gap6"><button class="btn" data-hpage="-1" ${home.page ? '' : 'disabled'}>Previous</button><button class="btn" data-hpage="1" ${home.page < pages - 1 ? '' : 'disabled'}>Next</button></span></div>`
     : `<div class="empty"><strong>No company matches “${esc(home.q)}”</strong><span>Try part of the name.</span></div>`;
   return `<div class="pagehead rise" style="--i:0"><div class="eyebrow">Companies</div><h1 style="margin-top:4px">Find a company</h1></div>
     <section class="card rise" style="--i:1">
-      <div class="toolbar"><div class="search" style="width:min(420px,100%)">${icon('search', 15)}<input class="input" id="hq" type="search" placeholder="Company name, at least 2 letters" value="${esc(home.q)}" aria-label="Search companies"></div>
-        <span class="sub small muted" style="margin-left:auto">${typed ? 'Best matches, most bids first' : 'Most active companies'}</span></div>
+      <div class="toolbar"><div class="search" style="width:min(380px,100%)">${icon('search', 15)}<input class="input" id="hq" type="search" placeholder="Company name, at least 2 letters" value="${esc(home.q)}" aria-label="Search companies"></div>
+        <div class="seg" role="group" aria-label="Sort companies">${sorts}</div>
+        <span class="sub small muted" style="margin-left:auto">${rows ? num(home.total) + ' ' + what : ''}</span></div>
       ${list}</section>`;
 }
 function renderHome() {
@@ -113,16 +122,30 @@ function renderHome() {
   document.getElementById('view').innerHTML = homeView();
 }
 async function searchCompanies() {
-  const q = home.q;
-  try { const d = await getJSON('/api/companies?q=' + encodeURIComponent(q.trim())); if (q !== home.q) return; home.rows = d.companies; home.error = ''; }
-  catch (e) { home.error = e.message; }
+  const asked = [home.q, home.sort, home.page].join('|');
+  const args = new URLSearchParams();  // the list's state goes in the address, so Back returns to the same page
+  if (home.q.trim()) args.set('q', home.q.trim());
+  if (home.sort !== 'bids') args.set('sort', home.sort);
+  if (home.page) args.set('page', home.page);
+  try { history.replaceState(null, '', location.pathname + (String(args) ? '?' + args : '')); } catch (e) {}
+  try {
+    const d = await getJSON('/api/companies?' + new URLSearchParams({ q: home.q.trim(), sort: home.sort, page: home.page }));
+    if (asked !== [home.q, home.sort, home.page].join('|')) return;
+    Object.assign(home, { rows: d.companies, total: d.total, per: d.per_page, rateMin: d.rate_min_bids, error: '' });
+  } catch (e) { home.error = e.message; }
   renderHome();
-  const el = document.getElementById('hq'); if (el && q) { el.focus(); el.setSelectionRange(q.length, q.length); }
+  const el = document.getElementById('hq'); if (el && home.q && document.activeElement === document.body) { el.focus(); el.setSelectionRange(home.q.length, home.q.length); }
 }
 let homeTyping;
 document.addEventListener('input', e => {
   if (e.target.id !== 'hq') return;
-  home.q = e.target.value; clearTimeout(homeTyping); homeTyping = setTimeout(searchCompanies, 250);
+  home.q = e.target.value; home.page = 0; clearTimeout(homeTyping); homeTyping = setTimeout(searchCompanies, 250);
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('button[data-hsort], button[data-hpage]');
+  if (!b || b.disabled) return;
+  if (b.dataset.hsort) { home.sort = b.dataset.hsort; home.page = 0; } else { home.page = Math.max(0, home.page + +b.dataset.hpage); window.scrollTo(0, 0); }
+  home.rows = home.rows || []; searchCompanies();
 });
 document.addEventListener('click', e => { const r = e.target.closest('tr[data-co]'); if (r && !e.target.closest('a')) location.href = '?c=' + r.dataset.co; });
 document.addEventListener('keydown', e => { const r = e.target.closest && e.target.closest('tr[data-co]'); if (r && e.key === 'Enter') location.href = '?c=' + r.dataset.co; });
